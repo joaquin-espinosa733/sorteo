@@ -51,6 +51,12 @@
           cursor: not-allowed;
       }
 
+      .botones {
+          display: flex;
+          gap: 10px;
+          margin-top: 10px;
+      }
+
       #ganadores {
           margin-top: 30px;
           background-color: white;
