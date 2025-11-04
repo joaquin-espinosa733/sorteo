@@ -4,159 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sorteo Aleatorio</title>
-
     <!-- 👇 Importamos Sansita y Poppins desde Google Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Sansita:wght@400;700;800&family=Poppins:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
-
-    <style>
-      body {
-        font-family: "Sansita", sans-serif; /* 👈 Sansita por defecto */
-        background-color: #0b4062;
-        color: #ffffff;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 30px;
-      }
-
-      h1 {
-        color: white;
-        margin-bottom: 20px;
-        font-weight: 800;
-      }
-
-      input[type="number"],
-      input[type="file"],
-      button {
-        margin: 10px;
-        padding: 10px;
-        font-size: 16px;
-        border: none;
-        border-radius: 8px;
-        font-family: "Sansita", sans-serif;
-      }
-
-      input[type="number"],
-      input[type="file"] {
-        background-color: #f2930b;
-        color: white;
-      }
-
-      button {
-        background-color: #f2930b;
-        color: white;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-        font-weight: 600;
-      }
-
-      button:hover:enabled {
-        background-color: white;
-        color: #0b4062;
-      }
-
-      button:disabled {
-        background-color: #444;
-        color: #0b4062;
-        cursor: not-allowed;
-      }
-
-      #ganadores {
-        margin-top: 30px;
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        width: 80%;
-        max-width: 600px;
-        text-align: center;
-        font-family: "Poppins", sans-serif; /* 👈 Poppins solo aquí */
-      }
-
-      #ganadores h3 {
-        margin-bottom: 15px;
-        color: #0b4062;
-      }
-
-      /* 🎉 Estilo de la lista de ganadores */
-      #ganadores ul {
-        list-style: none;
-        padding: 0;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 12px;
-        flex-direction: column;
-      }
-
-      /* Cuando haya más de 10 ganadores, usamos grid de 2 columnas */
-      #ganadores ul.dos-columnas {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
-
-      #ganadores li {
-        background: #f7bd6c;
-        color: #0b4062;
-        font-weight: bold;
-        font-size: 14px;
-        padding: 12px 20px;
-        border-radius: 10px;
-        animation: fadeIn 0.6s ease forwards;
-        opacity: 0;
-      }
-
-      @keyframes fadeIn {
-        from {
-          transform: translateY(20px);
-          opacity: 0;
-        }
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
-
-      #contador {
-        margin-top: 10px;
-        font-size: 16px;
-        color: white;
-      }
-
-      /* 🎯 Contador estilo sorteo */
-      #cuenta-regresiva {
-        font-size: 120px;
-        font-weight: bold;
-        color: #f2930b;
-        animation: pop 1s infinite;
-      }
-
-      @keyframes pop {
-        0% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.2);
-        }
-        100% {
-          transform: scale(1);
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="index.css" />
   </head>
   <body>
-    <h1>Sorteo Fiesta Día del Maestro SUTE 🎉</h1>
+    <h1>Sorteo SUTE 🎉</h1>
 
     <input type="file" id="archivo" accept=".txt" />
     <br />
     <label for="cantidad">Cantidad de ganadores a sortear:</label>
     <input type="number" id="cantidad" min="1" value="1" />
     <br />
+
     <button id="botonSortear" onclick="sortear()">Sortear</button>
     <button onclick="reiniciar()">Reiniciar ganadores</button>
+    <button onclick="descargarGanadores()">Descargar ganadores</button>
 
     <div id="contador">Ganadores hasta ahora: 0</div>
     <div id="cuenta-regresiva"></div>
@@ -261,6 +127,22 @@
           actualizarContador();
           alert("Ganadores reiniciados.");
         }
+      }
+
+      // 👇 Nueva función: descargar TXT con ganadores
+      function descargarGanadores() {
+        if (ganadores.length === 0) {
+          alert("No hay ganadores para descargar.");
+          return;
+        }
+
+        const contenido = ganadores.join("\n");
+        const blob = new Blob([contenido], { type: "text/plain" });
+        const enlace = document.createElement("a");
+        enlace.href = URL.createObjectURL(blob);
+        enlace.download = "ganadores.txt";
+        enlace.click();
+        URL.revokeObjectURL(enlace.href);
       }
 
       actualizarContador();
