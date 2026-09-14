@@ -182,6 +182,8 @@ button:disabled {
 
 /* 🎯 Contador estilo sorteo */
 #cuenta-regresiva {
+  display: flex;
+  justify-content: center;
   font-size: 120px;
   font-weight: bold;
   color: #f2930b;
