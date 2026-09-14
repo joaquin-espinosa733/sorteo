@@ -1,8 +1,8 @@
 let lista = [];
 
-let ganadores =
-    JSON.parse(localStorage.getItem("ganadores")) || [];
+let ganadores = JSON.parse(localStorage.getItem("ganadores")) || [];
 
+let sorteos = JSON.parse(localStorage.getItem("sorteos")) || [];
 
 // ============================================================
 // CARGAR ARCHIVO
@@ -114,7 +114,6 @@ function sortear() {
 function ejecutarSorteo(cantidad) {
     let nuevosGanadores = [];
 
-
     for (let i = 0; i < cantidad; i++) {
         const indice = Math.floor(
             Math.random() * lista.length
@@ -128,12 +127,28 @@ function ejecutarSorteo(cantidad) {
         ganadores.push(ganador);
     }
 
-
+    // Guardamos todos los ganadores para evitar que vuelvan a salir
     localStorage.setItem(
         "ganadores",
         JSON.stringify(ganadores)
     );
 
+    // Obtenemos el nombre del premio
+    const premio = document
+        .getElementById("premio")
+        .value
+        .trim();
+
+    // Guardamos este grupo de ganadores asociado al premio
+    sorteos.push({
+        premio: premio,
+        ganadores: nuevosGanadores
+    });
+
+    localStorage.setItem(
+        "sorteos",
+        JSON.stringify(sorteos)
+    );
 
     mostrarGanadores(nuevosGanadores);
 
@@ -258,7 +273,6 @@ function reiniciar() {
         return;
     }
 
-
     const confirmar = confirm(
         `⚠️ ATENCIÓN\n\n` +
         `Hay ${ganadores.length} ganadores guardados.\n\n` +
@@ -267,30 +281,25 @@ function reiniciar() {
         `Esta acción no se puede deshacer.`
     );
 
-
     if (!confirmar) return;
 
-
     localStorage.removeItem("ganadores");
-
+    localStorage.removeItem("sorteos");
 
     ganadores = [];
+    sorteos = [];
 
     lista = [];
-
 
     document.getElementById(
         "ganadores"
     ).innerHTML = "";
 
-
     document.getElementById(
         "archivo"
     ).value = "";
 
-
     actualizarContador();
-
 
     alert(
         "Nuevo sorteo iniciado.\n\n" +
@@ -305,12 +314,11 @@ function reiniciar() {
 // ============================================================
 
 function descargarGanadores() {
-    if (ganadores.length === 0) {
+    if (sorteos.length === 0) {
         alert("No hay ganadores para descargar.");
 
         return;
     }
-
 
     const confirmar = confirm(
         `Se van a descargar ` +
@@ -318,13 +326,19 @@ function descargarGanadores() {
         `¿Querés continuar?`
     );
 
-
     if (!confirmar) return;
 
+    let contenido = "";
 
-    const contenido =
-        ganadores.join("\n");
+    sorteos.forEach((sorteo) => {
+        contenido += "================================\n";
+        contenido += `${sorteo.premio}\n`;
+        contenido += "================================\n\n";
 
+        contenido += sorteo.ganadores.join("\n");
+
+        contenido += "\n\n";
+    });
 
     const blob = new Blob(
         [contenido],
@@ -333,27 +347,21 @@ function descargarGanadores() {
         }
     );
 
-
     const enlace =
         document.createElement("a");
-
 
     enlace.href =
         URL.createObjectURL(blob);
 
-
     enlace.download =
         "ganadores.txt";
 
-
     enlace.click();
-
 
     URL.revokeObjectURL(
         enlace.href
     );
 }
-
 
 // ============================================================
 // INICIALIZAR
